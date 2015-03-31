@@ -1,0 +1,68 @@
+{% load url from future %}
+{% load i18n %}
+
+{% comment %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form id="voting_form_{{ survey.pk }}" method="POST" action="{% url 'survey:process_vote' slug=survey.slug %}">
+{% csrf_token %}
+
+{% for question in survey.questions %}
+  <div>
+    {{ question.question_text }}
+    <ul>
+    {% for choice in question.choices %}
+      <li>
+        <input type="radio"
+            name="choice[{{ question.pk }}]"
+            id="choice_{{ question.pk }}_{{ forloop.counter }}"
+            value="{{ choice.pk }}" />
+        <label for="choice_{{ question.pk }}_{{ forloop.counter }}">
+          {{ choice.choice_text }}
+        </label>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+
+</form>
+
+{% endcomment %}
+
+
+<form method="POST" action="{% url 'survey:form' slug=survey.slug %}">
+  {% csrf_token %}
+
+  {% for field in response_form %}
+    {% if 'question_' in field.name %}
+      {% if field.field.required %}
+      <div class="field-wrapper question-required">
+        {{ field.errors }}
+        <span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
+      {% else %}
+      <div class="field-wrapper">
+        {{ field.errors }}
+        <label class="label-inline">{{ field.label }}</label>
+      {% endif %}
+        <span class="form-help-text">{{ field.help_text}}</span>
+        <div class="form-field-body">
+            {{ field }}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <div class="field-wrapper">
+    {{ response_form.comments.errors }}
+    {{ response_form.comments.label_tag }}
+    <span class="form-help-text">{{ response_form.comments.help_text}}</span>
+    <div class="form-field-body">
+      {{ response_form.comments }}
+    </div>
+  </div>
+
+  <div class="submit-button"><input type="submit" value="Submit"></div>
+
+</form>
