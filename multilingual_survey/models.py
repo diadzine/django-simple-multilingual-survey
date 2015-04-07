@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from multilingual_model.models import MultilingualModel, MultilingualTranslation
 
 
@@ -22,7 +23,7 @@ class Survey(MultilingualModel):
 
     def questions(self):
       if self.pk:
-          return Question.objects.filter(survey=self.pk)
+          return self.question_set.all()
       else:
           return None
 
@@ -37,6 +38,7 @@ class QuestionTranslation(MultilingualTranslation):
 
 class Question(MultilingualModel):
     survey = models.ForeignKey(Survey)
+    slug = models.SlugField(max_length=200)
 
     def __unicode__(self):
         return self.unicode_wrapper('question_text', default='Question')
@@ -46,7 +48,7 @@ class Question(MultilingualModel):
 
     def choices(self):
       if self.pk:
-          return Choice.objects.filter(question=self.pk)
+          return self.choice_set.all()
       else:
           return None
 
@@ -71,7 +73,7 @@ class Choice(MultilingualModel):
 
 class Response(models.Model):
     survey = models.ForeignKey(Survey)
-    date_vote = models.DateTimeField(auto_now_add=True)
+    date_vote = models.DateTimeField(default=timezone.now())
     response_user = models.CharField('Name of user', max_length=400)
     comments = models.TextField('Any additional Comments', blank=True, null=True)
     ip = models.IPAddressField()
