@@ -75,14 +75,14 @@ class Choice(MultilingualModel):
 
 class Response(models.Model):
     survey = models.ForeignKey(Survey)
-    date_vote = models.DateTimeField(default=timezone.now())
+    date_vote = models.DateTimeField(default=timezone.now)
     response_user = models.CharField('Name of user', max_length=400)
     comments = models.TextField(
         'Any additional Comments',
         blank=True,
         null=True
     )
-    ip = models.IPAddressField()
+    ip = models.GenericIPAddressField()
     response_uuid = models.CharField(
         "Response unique identifier",
         max_length=36
