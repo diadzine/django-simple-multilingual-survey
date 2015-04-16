@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from multilingual_survey.models import Survey
-from forms import ResponseForm
+from multilingual_survey.forms import ResponseForm
 
 
 def survey_form(request, slug):
@@ -13,11 +13,22 @@ def survey_form(request, slug):
             response = form.save()
             return redirect('survey:success', uuid=response.response_uuid)
         else:
-            return render(request, 'multilingual_survey/form.html', {'response_form': form, 'survey': survey})
+            return render(
+                request,
+                'multilingual_survey/form.html',
+                {'response_form': form, 'survey': survey}
+            )
     else:
-        return render(request, 'multilingual_survey/form.html', {'response_form': form, 'survey': survey})
+        return render(
+            request,
+            'multilingual_survey/form.html',
+            {'response_form': form, 'survey': survey}
+        )
+
 
 def survey_success(request, uuid):
-    return render(request, 'multilingual_survey/success.html', {'uuid':uuid})
-
-
+    return render(
+        request,
+        'multilingual_survey/success.html',
+        {'uuid': uuid}
+    )
