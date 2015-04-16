@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from multilingual_model.models import MultilingualModel, MultilingualTranslation
+from multilingual_model.models import (
+    MultilingualModel, MultilingualTranslation
+)
 
 
 class SurveyTranslation(MultilingualTranslation):
@@ -22,10 +24,10 @@ class Survey(MultilingualModel):
         return self.__unicode__()
 
     def questions(self):
-      if self.pk:
-          return self.question_set.all()
-      else:
-          return None
+        if self.pk:
+            return self.question_set.all()
+        else:
+            return None
 
 
 class QuestionTranslation(MultilingualTranslation):
@@ -47,10 +49,10 @@ class Question(MultilingualModel):
         return self.__unicode__()
 
     def choices(self):
-      if self.pk:
-          return self.choice_set.all()
-      else:
-          return None
+        if self.pk:
+            return self.choice_set.all()
+        else:
+            return None
 
 
 class ChoiceTranslation(MultilingualTranslation):
@@ -75,9 +77,16 @@ class Response(models.Model):
     survey = models.ForeignKey(Survey)
     date_vote = models.DateTimeField(default=timezone.now())
     response_user = models.CharField('Name of user', max_length=400)
-    comments = models.TextField('Any additional Comments', blank=True, null=True)
+    comments = models.TextField(
+        'Any additional Comments',
+        blank=True,
+        null=True
+    )
     ip = models.IPAddressField()
-    response_uuid = models.CharField("Response unique identifier", max_length=36)
+    response_uuid = models.CharField(
+        "Response unique identifier",
+        max_length=36
+    )
 
     def __unicode__(self):
         return ("response %s" % self.response_uuid)
