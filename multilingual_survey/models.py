@@ -1,24 +1,18 @@
 from django.db import models
 from django.utils import timezone
-from multilingual_model.models import (
-    MultilingualModel, MultilingualTranslation
-)
+from hvad.models import TranslatableModel, TranslatedFields
 
 
-class SurveyTranslation(MultilingualTranslation):
-    class Meta:
-        unique_together = ('parent', 'language_code')
-
-    parent = models.ForeignKey('Survey', related_name='translations')
-    title = models.CharField(max_length=200)
-
-
-class Survey(MultilingualModel):
+class Survey(TranslatableModel):
     slug = models.SlugField(max_length=200)
     hit = models.PositiveIntegerField(default=0)
 
+    translations = TranslatedFields(
+        title=models.CharField(max_length=200)
+    )
+
     def __unicode__(self):
-        return self.unicode_wrapper('title', default='Survey')
+        return self.safe_translation_getter('title', str(self.pk))
 
     def admin_title(self):
         return self.__unicode__()
@@ -30,20 +24,16 @@ class Survey(MultilingualModel):
             return None
 
 
-class QuestionTranslation(MultilingualTranslation):
-    class Meta:
-        unique_together = ('parent', 'language_code')
-
-    parent = models.ForeignKey('Question', related_name='translations')
-    question_text = models.CharField(max_length=200)
-
-
-class Question(MultilingualModel):
+class Question(TranslatableModel):
     survey = models.ForeignKey(Survey)
     slug = models.SlugField(max_length=200)
 
+    translations = TranslatedFields(
+        question_text=models.CharField(max_length=200)
+    )
+
     def __unicode__(self):
-        return self.unicode_wrapper('question_text', default='Question')
+        return self.safe_translation_getter('question_text', str(self.pk))
 
     def admin_title(self):
         return self.__unicode__()
@@ -55,19 +45,15 @@ class Question(MultilingualModel):
             return None
 
 
-class ChoiceTranslation(MultilingualTranslation):
-    class Meta:
-        unique_together = ('parent', 'language_code')
-
-    parent = models.ForeignKey('Choice', related_name='translations')
-    choice_text = models.CharField(max_length=200)
-
-
-class Choice(MultilingualModel):
+class Choice(TranslatableModel):
     question = models.ForeignKey(Question)
 
+    translations = TranslatedFields(
+        choice_text=models.CharField(max_length=200)
+    )
+
     def __unicode__(self):
-        return self.unicode_wrapper('choice_text', default='Choice')
+        return self.safe_translation_getter('choice_text', str(self.pk))
 
     def admin_title(self):
         return self.__unicode__()

@@ -22,7 +22,7 @@ setup(
     author_email='diadzine@gmail.com',
     install_requires=[
         'Django',
-        'django-multilingual-model',
+        'django-hvad',
     ],
     classifiers=[
         'Environment :: Web Environment',
