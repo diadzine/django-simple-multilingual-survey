@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from hvad.models import TranslatableModel, TranslatedFields
+from django.utils.translation import ugettext_lazy as _
 
 
 class Survey(TranslatableModel):
@@ -12,14 +13,17 @@ class Survey(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.safe_translation_getter('title', str(self.pk))
+        title = self.lazy_translation_getter('title', None)
+        if not title:
+            title = getattr(self, 'slug', str(self.pk))
+        return title
 
     def admin_title(self):
         return self.__unicode__()
 
     def questions(self):
         if self.pk:
-            return self.question_set.all()
+            return self.question_set.language('').all()
         else:
             return None
 
@@ -33,14 +37,17 @@ class Question(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.safe_translation_getter('question_text', str(self.pk))
+        title = self.lazy_translation_getter('question_text', None)
+        if not title:
+            title = getattr(self, 'slug', str(self.pk))
+        return title
 
     def admin_title(self):
         return self.__unicode__()
 
     def choices(self):
         if self.pk:
-            return self.choice_set.all()
+            return self.choice_set.language('').all()
         else:
             return None
 
@@ -53,10 +60,13 @@ class Choice(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.safe_translation_getter('choice_text', str(self.pk))
+        return self.lazy_translation_getter('choice_text', str(self.pk))
 
     def admin_title(self):
         return self.__unicode__()
+
+    def get_survey(self):
+        return self.question.survey
 
 
 class Response(models.Model):
@@ -64,7 +74,7 @@ class Response(models.Model):
     date_vote = models.DateTimeField(default=timezone.now)
     response_user = models.CharField('Name of user', max_length=400)
     comments = models.TextField(
-        'Any additional Comments',
+        _('Comments'),
         blank=True,
         null=True
     )

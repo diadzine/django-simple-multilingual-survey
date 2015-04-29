@@ -1,8 +1,21 @@
 {% load url from future %}
 {% load i18n %}
 
-<form method="POST" action="{% url 'survey:form' slug=survey.slug %}">
+<form method="POST" action="">
   {% csrf_token %}
+
+  <ul>
+  {% for question in survey.question_set.all %}
+    <li>
+      <span>{{ question.question_text }}</span>
+      <ul>
+      {% for choice in question.choice_set.all %}
+        <li>{{ choice }}</li>
+      {% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+  </ul>
 
   {% for field in response_form %}
     {% if 'question_' in field.name %}
