@@ -21,8 +21,8 @@ setup(
     author='Aymeric Bringard',
     author_email='diadzine@gmail.com',
     install_requires=[
-        'Django<1.8',
-        'django-hvad',
+        'Django',
+        'django-hvad<=1.0.0',
     ],
     classifiers=[
         'Environment :: Web Environment',
