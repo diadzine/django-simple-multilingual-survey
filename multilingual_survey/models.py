@@ -5,11 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Survey(TranslatableModel):
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(_('Survey slug'), max_length=200)
     hit = models.PositiveIntegerField(default=0)
 
     translations = TranslatedFields(
-        title=models.CharField(max_length=200)
+        title=models.CharField(_('Survey title'), max_length=200)
     )
 
     def __unicode__(self):
@@ -27,13 +27,18 @@ class Survey(TranslatableModel):
         else:
             return None
 
+    class Meta:
+        ordering = ['pk']
+        verbose_name = _("Survey")
+        verbose_name_plural = _("Surveys")
+
 
 class Question(TranslatableModel):
     survey = models.ForeignKey(Survey)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(_('Question slug'), max_length=200)
 
     translations = TranslatedFields(
-        question_text=models.CharField(max_length=200)
+        question_text=models.CharField(_('Question text'), max_length=200)
     )
 
     def __unicode__(self):
@@ -51,12 +56,17 @@ class Question(TranslatableModel):
         else:
             return None
 
+    class Meta:
+        ordering = ['pk']
+        verbose_name = _("Question")
+        verbose_name_plural = _("Questions")
+
 
 class Choice(TranslatableModel):
     question = models.ForeignKey(Question)
 
     translations = TranslatedFields(
-        choice_text=models.CharField(max_length=200)
+        choice_text=models.CharField(_('Choice text'), max_length=200)
     )
 
     def __unicode__(self):
@@ -68,11 +78,19 @@ class Choice(TranslatableModel):
     def get_survey(self):
         return self.question.survey
 
+    class Meta:
+        ordering = ['pk']
+        verbose_name = _("Choice")
+        verbose_name_plural = _("Choices")
+
 
 class Response(models.Model):
     survey = models.ForeignKey(Survey)
     date_vote = models.DateTimeField(default=timezone.now)
-    response_user = models.CharField('Name of user', max_length=400)
+    response_user = models.CharField(
+        _('Name of user or identifier'),
+        max_length=400
+    )
     comments = models.TextField(
         _('Comments'),
         blank=True,
@@ -80,14 +98,24 @@ class Response(models.Model):
     )
     ip = models.GenericIPAddressField()
     response_uuid = models.CharField(
-        "Response unique identifier",
+        _("Response unique identifier"),
         max_length=36
     )
 
     def __unicode__(self):
         return ("response %s" % self.response_uuid)
 
+    class Meta:
+        ordering = ['-date_vote']
+        verbose_name = _("Response")
+        verbose_name_plural = _("Responses")
+
 
 class Answer(models.Model):
     response = models.ForeignKey(Response)
     choice = models.ForeignKey(Choice)
+
+    class Meta:
+        ordering = ['pk']
+        verbose_name = _("Answer")
+        verbose_name_plural = _("Answers")
