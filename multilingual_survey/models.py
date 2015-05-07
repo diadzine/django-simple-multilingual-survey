@@ -2,11 +2,16 @@ from django.db import models
 from django.utils import timezone
 from hvad.models import TranslatableModel, TranslatedFields
 from django.utils.translation import ugettext_lazy as _
+from multilingual_survey.managers import (
+    SurveyManager, QuestionManager, ChoiceManager
+)
 
 
 class Survey(TranslatableModel):
     slug = models.SlugField(_('Survey slug'), max_length=200)
     hit = models.PositiveIntegerField(default=0)
+
+    objects = SurveyManager()
 
     translations = TranslatedFields(
         title=models.CharField(_('Survey title'), max_length=200)
@@ -37,6 +42,8 @@ class Question(TranslatableModel):
     survey = models.ForeignKey(Survey)
     slug = models.SlugField(_('Question slug'), max_length=200)
 
+    objects = QuestionManager()
+
     translations = TranslatedFields(
         question_text=models.CharField(_('Question text'), max_length=200)
     )
@@ -64,6 +71,8 @@ class Question(TranslatableModel):
 
 class Choice(TranslatableModel):
     question = models.ForeignKey(Question)
+
+    objects = ChoiceManager()
 
     translations = TranslatedFields(
         choice_text=models.CharField(_('Choice text'), max_length=200)

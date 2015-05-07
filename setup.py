@@ -10,14 +10,14 @@ import multilingual_survey
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-multilingual-survey',
+    name='django-simple-multilingual-survey',
     version=multilingual_survey.__version__,
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',  # example license
     description='A simple Django app to conduct Web-based multilingual surveys.',
     long_description=README,
-    url='https://github.com/diadzine/django-multilingual-survey',
+    url='https://github.com/diadzine/django-simple-multilingual-survey',
     author='Aymeric Bringard',
     author_email='diadzine@gmail.com',
     install_requires=[

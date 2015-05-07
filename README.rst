@@ -1,8 +1,8 @@
-===================
-Multilingual Survey
-===================
+==========================
+Simple Multilingual Survey
+==========================
 
-Multilingual Survey is a simple Django app to conduct Web-based survey.
+Simple Multilingual Survey is a simple Django app to conduct Web-based survey.
 For each survey and question, visitors can choose between a fixed number of choices.
 
 Quick start
