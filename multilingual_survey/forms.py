@@ -1,14 +1,8 @@
 from django import forms
 from django.forms import models
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 import uuid
 from multilingual_survey.models import Response, Answer, Question, Choice
-
-
-class HorizontalRadioRenderer(forms.RadioSelect.renderer):
-    def render(self):
-        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
 
 class ResponseForm(models.ModelForm):
@@ -38,7 +32,7 @@ class ResponseForm(models.ModelForm):
             self.fields["question_%d" % q.pk] = forms.ModelChoiceField(
                 label=q,
                 queryset=question_choices, empty_label=None,
-                widget=forms.RadioSelect(renderer=HorizontalRadioRenderer)
+                widget=forms.RadioSelect(attrs={'class': 'inline'})
             )
             self.fields["question_%d" % q.pk].slug = q.slug
             self.fields["question_%d" % q.pk].required = True
